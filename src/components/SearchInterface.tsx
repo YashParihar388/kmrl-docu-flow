@@ -101,8 +101,8 @@ export const SearchInterface = () => {
       result.keywords.some(keyword => keyword.toLowerCase().includes(searchQuery.toLowerCase())) ||
       result.summary.toLowerCase().includes(searchQuery.toLowerCase());
     
-    const matchesType = !selectedType || result.type === selectedType;
-    const matchesDepartment = !selectedDepartment || result.department === selectedDepartment;
+    const matchesType = !selectedType || selectedType === "all" || result.type === selectedType;
+    const matchesDepartment = !selectedDepartment || selectedDepartment === "all" || result.department === selectedDepartment;
     
     return matchesQuery && matchesType && matchesDepartment;
   });
@@ -146,7 +146,7 @@ export const SearchInterface = () => {
                 <SelectValue placeholder="Document Type" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">All Types</SelectItem>
+                <SelectItem value="all">All Types</SelectItem>
                 {documentTypes.map(type => (
                   <SelectItem key={type} value={type}>{type}</SelectItem>
                 ))}
@@ -158,7 +158,7 @@ export const SearchInterface = () => {
                 <SelectValue placeholder="Department" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">All Departments</SelectItem>
+                <SelectItem value="all">All Departments</SelectItem>
                 {departments.map(dept => (
                   <SelectItem key={dept} value={dept}>{dept}</SelectItem>
                 ))}
