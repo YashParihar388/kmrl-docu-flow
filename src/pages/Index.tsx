@@ -4,6 +4,8 @@ import { DocumentUpload } from "@/components/DocumentUpload";
 import { DocumentClassification } from "@/components/DocumentClassification";
 import { SmartRouting } from "@/components/SmartRouting";
 import { SearchInterface } from "@/components/SearchInterface";
+import { FileUploadSystem } from "@/components/FileUploadSystem";
+import { DocumentHistory } from "@/components/DocumentHistory";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -98,10 +100,18 @@ const Index = () => {
           </CardHeader>
           <CardContent>
             <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-              <TabsList className="grid w-full grid-cols-4">
+              <TabsList className="grid w-full grid-cols-6">
                 <TabsTrigger value="upload" className="flex items-center space-x-2">
                   <Upload className="h-4 w-4" />
                   <span>Upload</span>
+                </TabsTrigger>
+                <TabsTrigger value="gemini-upload" className="flex items-center space-x-2">
+                  <Brain className="h-4 w-4" />
+                  <span>AI Upload</span>
+                </TabsTrigger>
+                <TabsTrigger value="history" className="flex items-center space-x-2">
+                  <Clock className="h-4 w-4" />
+                  <span>History</span>
                 </TabsTrigger>
                 <TabsTrigger value="classification" className="flex items-center space-x-2">
                   <Brain className="h-4 w-4" />
@@ -120,6 +130,14 @@ const Index = () => {
               <div className="mt-8">
                 <TabsContent value="upload" className="space-y-6">
                   <DocumentUpload />
+                </TabsContent>
+                
+                <TabsContent value="gemini-upload" className="space-y-6">
+                  <FileUploadSystem />
+                </TabsContent>
+                
+                <TabsContent value="history" className="space-y-6">
+                  <DocumentHistory />
                 </TabsContent>
                 
                 <TabsContent value="classification" className="space-y-6">
