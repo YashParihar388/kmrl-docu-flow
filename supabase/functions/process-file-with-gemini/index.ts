@@ -36,8 +36,13 @@ serve(async (req) => {
     const arrayBuffer = await file.arrayBuffer();
     const uint8Array = new Uint8Array(arrayBuffer);
     
-    // Convert to base64 for Gemini API
-    const base64Content = btoa(String.fromCharCode(...uint8Array));
+    // Convert to base64 for Gemini API (handle large files properly)
+    let base64Content = '';
+    const chunkSize = 8192;
+    for (let i = 0; i < uint8Array.length; i += chunkSize) {
+      const chunk = uint8Array.slice(i, i + chunkSize);
+      base64Content += btoa(String.fromCharCode(...chunk));
+    }
     
     // Determine mime type for Gemini
     let mimeType = file.type;
@@ -68,7 +73,7 @@ serve(async (req) => {
     console.log('File uploaded to storage:', uploadData);
 
     // Process with Gemini API
-    const geminiResponse = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-pro-vision:generateContent?key=${geminiApiKey}`, {
+    const geminiResponse = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${geminiApiKey}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
