@@ -32,17 +32,22 @@ serve(async (req) => {
 
     console.log(`Processing file: ${file.name}, type: ${file.type}, size: ${file.size}`);
 
-    // Read file content
-    const arrayBuffer = await file.arrayBuffer();
-    const uint8Array = new Uint8Array(arrayBuffer);
-    
-    // Convert to base64 for Gemini API (handle large files properly)
-    let base64Content = '';
-    const chunkSize = 8192;
-    for (let i = 0; i < uint8Array.length; i += chunkSize) {
-      const chunk = uint8Array.slice(i, i + chunkSize);
-      base64Content += btoa(String.fromCharCode(...chunk));
+    // Check file size (max 5MB for Gemini API)
+    if (file.size > 5 * 1024 * 1024) {
+      throw new Error('File size too large. Maximum supported size is 5MB.');
     }
+
+    // Read file content safely
+    const arrayBuffer = await file.arrayBuffer();
+    const bytes = new Uint8Array(arrayBuffer);
+    
+    // Convert to base64 using built-in encoder to avoid stack overflow
+    let binary = '';
+    const len = bytes.byteLength;
+    for (let i = 0; i < len; i++) {
+      binary += String.fromCharCode(bytes[i]);
+    }
+    const base64Content = btoa(binary);
     
     // Determine mime type for Gemini
     let mimeType = file.type;
@@ -60,7 +65,7 @@ serve(async (req) => {
     const fileName = `${Date.now()}-${file.name}`;
     const { data: uploadData, error: uploadError } = await supabase.storage
       .from('documents')
-      .upload(fileName, uint8Array, {
+      .upload(fileName, bytes, {
         contentType: mimeType,
         upsert: false
       });

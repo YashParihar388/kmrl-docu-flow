@@ -50,11 +50,11 @@ export const FileUploadSystem: React.FC = () => {
         return;
       }
 
-      // Check file size (max 10MB)
-      if (file.size > 10 * 1024 * 1024) {
+      // Check file size (max 5MB)
+      if (file.size > 5 * 1024 * 1024) {
         toast({
           title: "File too large",
-          description: `${file.name} is larger than 10MB. Please upload a smaller file.`,
+          description: `${file.name} is larger than 5MB. Please upload a smaller file.`,
           variant: "destructive"
         });
         return;
